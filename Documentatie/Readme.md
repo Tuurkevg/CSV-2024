@@ -4,6 +4,20 @@ Auteurs: Arthur Van Ginderachter, Jaak Daemen, Renz De Baets, Bert Coudenys
 
 In deze readme gaan wij uitleggen hoe je de exploit van WordPress kan gebruiken om een Admin account te maken en toegang te krijgen met admin level access op een WordPress server.
 
+## Inloggegevens van de VM's
+
+- Kali Linux:
+
+Log in: root
+
+Wachtwoord: osboxes.org
+
+- Ubuntu server:
+
+Log in: osboxes
+
+Wachtwoord: osboxes.org
+
 ## Scripts en bestanden nodig voor het opzetten van de omgeving.
 
 We hebben de omgeven opzetten geautomatiseerd aan de hand van scripts zowel PowerShell als bash.
@@ -34,22 +48,26 @@ Download ook deze twee .vdi files van [OSBoxes](https://www.osboxes.org/)
 Pak de .zip file die u gedownload heeft uit.
 Voer enkel het "vmcreator.ps1" uit. Alvoor u dit kan doen zal u het bestand moeten vertrouwen.
 Doe dit door, rechtermuisklik vervolgens "Eigenschappen" te openen en vanonder te klikken op "Blokkering opheffen". Dit is noodzakelijk, anders zal het script niet uitvoerbaar zijn!
-Het script zal u drie absolute paden vragen. Onder andere van de twee .vdi bestanden als ook van de "shared" map. Dit is de map die u zojuist hebt gedownload en uitgepakt.
+Het script zal u drie absolute paden vragen. Onder andere van de twee .vdi bestanden als ook van de "shared" map. Dit is de map die u zojuist hebt gedownload en uitgepakt. Tijdens het uitvoeren van het "vmcreator.ps1" script zal er gevraagd worden om het wachtwoord van de Ubuntu server op te geven, dit is: `osboxes.org`.
 
 ### Uitzonderingen/Errors
 
-Zorg er zeker voor dat na het uitvoeren van het script de laatste lijn in de console dit zegt: "IP-Adres van de Ubuntu-server: arthurisgeenjaak.com".
-In het geval dit NIET zo is, betekent dit dat het hosts-bestand niet correct is aangemaakt. Hier is een voorbeeld:
+Zorg ervoor dat na het uitvoeren van het script de laatste regel in de console het volgende weergeeft: "IP-adres van de Ubuntu-server: "arthurisgeenjaak.com". Als dit niet het geval is, betekent dit dat het hosts-bestand niet correct is aangemaakt.
+
+Hier volgt een voorbeeld van hoe het einde van het script kan uitzien (indien er een fout is in geslopen):
 
 ```bash
 IP-Adres van de Ubuntu-server: 192.168.69.69
 IP-Adres van de Ubuntu-server:
 ```
 
-U kan dit oplossen door.
+OF in het bestand "/etc/hosts" kan je controleren dat "arthurisgeenjaak.com" in voorkomt. Dit kan u bekijken door in de shell het volgende commando in te voeren: `sudo nano /etc/hosts`.
 
-1. Deze handmatig aan te maken.
+U kan dit oplossen door:
+
+1. Deze handmatig aan te maken in de host-file, door `sudo nano /etc/hosts` in de shell in te geven. Daarna "arthurisgeenjaak.com" in dit bestand te schrijven, het bestand op te slaan en af te sluiten.
 2. Het PowerShell script nogmaals uitvoeren. Deze zal enkel de bash scripts uitvoeren aangezien de VM's al bestaan.
+
    Nu zou dit te zien moeten zijn.
 
 ```bash
@@ -61,7 +79,7 @@ IP-Adres van de Ubuntu-server: arthurisgeenjaak.com
 
 Na het opzetten van de werkomgeving kan u de exploit gebruiken om een admin level user toe te voegen.
 Dit hebben wij gedaan via Metasploit.
-Open Metasploit en u zult een terminal te zien krijgen.
+Open Metasploit op de Kali Linux en u zult een terminal te zien krijgen.
 In deze terminal kan u het volgende commando uitvoeren om de exploit te zoeken:
 
 ```bash
