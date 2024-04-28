@@ -1,6 +1,6 @@
 ﻿#C:\Users\Arthur\Downloads\Kali Linux 2024.1 (64bit).vdi
 #C:\Users\Arthur\Downloads/Ubuntu Server 23.04 (64bit).vdi
-#C:\Users\Arthur\Downloads\shared
+#C:\Users\Arthur\Documents\Github\CSV-2024\Shared-Folder
 # Functie om het absolute pad van een bestand te krijgen
 function Get-AbsolutePath {
     param([string]$Path)
@@ -146,6 +146,7 @@ $ipAddressUbuntu = $(VBoxManage guestproperty get "Ubuntu server" "/VirtualBox/G
 Write-Host "-------------------------------UPDATEN VAN GUEST EDITIONS UBUNTU SERVER------------------------------------------------"
 # Voer het Bash-script uit op de Linux VM met SSH en wachtwoord authenticatie
 Write-Host "------------------------GEEF HET WACHTWOORD OSBOXES.ORG IN!!!!! Ubuntu Server---------------------------------------------------"
+
 ssh -o StrictHostKeyChecking=no $Username@$ipAddressUbuntu "$guestupdatesh > guestupdate.sh && chmod +x guestupdate.sh && echo 'osboxes.org'| sudo -S bash guestupdate.sh"
 
 # Oneindige lus tot de VM is opgestart

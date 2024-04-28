@@ -46,7 +46,7 @@ GRANT ALL ON ${db_name}.* TO '${db_user}' IDENTIFIED BY '${db_password}';
 FLUSH PRIVILEGES;
 _EOF_
 
-systemctl restart mariadb
+systemctl restart mairadb
 
 echo "-----------------------installeren van alle benodigde software voor de webserver----------------------------------"
 apt install -y apache2 php php-curl php-bcmath php-gd php-soap php-zip php-curl php-mbstring php-mysqlnd php-gd php-xml php-intl php-zip
@@ -153,7 +153,7 @@ if [ ! -f "/usr/local/bin/wp/wp-cli.phar" ]; then
     mv wp-cli.phar /usr/local/bin/wp/wp-cli.phar
     chmod +x  /usr/local/bin/wp/wp-cli.phar
 else 
-    echo "AL GEBEURD?"
+    echo "wp-cli al geinstalleerd"
 fi
 
 # Stel de juiste permissies in voor de uploads map
@@ -166,7 +166,7 @@ if ! $(/usr/local/bin/wp/wp-cli.phar core is-installed --path=/var/www/html/word
     #echo "/usr/local/bin/wp/wp-cli.phar core install --path="/var/www/html/wordpress/" --url="${DOMAIN_NAME}" --title="${WP_TITLE}" --admin_user="${WP_ADMIN}" --admin_password="${WP_PASSWORD}" --admin_email="${WP_EMAIL}""
     /usr/local/bin/wp/wp-cli.phar core install --path="/var/www/html/wordpress/" --url="${DOMAIN_NAME}" --title="${WP_TITLE}" --admin_user="${WP_ADMIN}" --admin_password="${WP_PASSWORD}" --admin_email="${WP_EMAIL}" --quiet --skip-email --allow-root
 else
-echo "---------------wordpress isntallatie :al gebeurd--------------------"
+echo "---------------wordpress installatieoverslaan: al gebeurd--------------------"
 fi
 systemctl restart apache2
 
