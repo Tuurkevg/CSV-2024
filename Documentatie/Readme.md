@@ -20,19 +20,22 @@ Wachtwoord: osboxes.org
 
 ## Scripts en bestanden nodig voor het opzetten van de omgeving.
 
-We hebben de omgeven opzetten geautomatiseerd aan de hand van scripts zowel PowerShell als bash.
+We hebben de omgeving opzetten geautomatiseerd aan de hand van scripts zowel PowerShell als bash.
 Binnen het .zip bestand zal u 4 bestanden vinden.
 
 1. rootpromotie.sh
-   - Dit bash script zal gecopieerd worden naar de kali linux machine en dan uitgevoerd worden door het vmcreator.ps1 script.
-   - Dit bash script bevat commando's om ervoor te zorgen dat het root account geactiveerd wordt.
+   - Dit bash script zal gekopieerd worden naar de kali linux machine en dan uitgevoerd worden door het vmcreator.ps1 script.
+   - Dit bash script bevat commando's om ervoor te zorgen dat het root account geactiveerd wordt voor de Kali Linux vm.
 2. script1.sh
    - Dit bash script zal uitgevoerd worden door het vmcreator.ps1 script.
    - Dit bash script zal een databank en een WordPress server opzetten. Het zal ook de manuele installatie van WordPress overslaan en dit automatisch doen.
-3. vmcreator.ps1
+3. guestupdate.sh
+   - Dit script update de guest-additions van VirtualBox op de Ubuntu server (dit is nodig voor VBoxManage correct te kunnen gebruiken).
+   - Dit bash script zal gekopieerd worden naar de Ubuntu server machine en dan uitgevoerd worden door het vmcreator.ps1 script.
+4. vmcreator.ps1
    - Dit PowerShell script is verantwoordelijk voor het opzetten van de 2 nodige VM's aan de hand van VBoxManage.
    - Dit PowerShell script zal ook beide bash scripts uitvoeren en dus de volledige installatie automatiseren.
-4. woocommerce-payments.5.6.1.zip
+5. woocommerce-payments.5.6.1.zip
    - Deze zip file bevat de verouderde en kwetsbare versie van een WooCommerce plugin.
    - BELANGERIJK! Pak deze zip NIET uit.
 
@@ -46,7 +49,7 @@ Download ook deze twee .vdi files van [OSBoxes](https://www.osboxes.org/)
 ## Opzetten van de omgeving
 
 Pak de .zip file die u gedownload heeft uit.
-Voer enkel het "vmcreator.ps1" uit. Alvoor u dit kan doen zal u het bestand moeten vertrouwen.
+Voer enkel het "vmcreator.ps1" uit, dit gewoon uitvoeren door erop te klikken (niet met de PowerShell ISE). Alvoor u dit kan doen zal u het bestand moeten vertrouwen.
 Doe dit door, rechtermuisklik vervolgens "Eigenschappen" te openen en vanonder te klikken op "Blokkering opheffen". Dit is noodzakelijk, anders zal het script niet uitvoerbaar zijn!
 Het script zal u drie absolute paden vragen. Onder andere van de twee .vdi bestanden als ook van de "shared" map. Dit is de map die u zojuist hebt gedownload en uitgepakt. Tijdens het uitvoeren van het "vmcreator.ps1" script zal er gevraagd worden om het wachtwoord van de Ubuntu server op te geven, dit is: `osboxes.org`.
 
@@ -61,12 +64,12 @@ IP-Adres van de Ubuntu-server: 192.168.69.69
 IP-Adres van de Ubuntu-server:
 ```
 
-OF in het bestand "/etc/hosts" kan je controleren dat "arthurisgeenjaak.com" in voorkomt. Dit kan u bekijken door in de shell het volgende commando in te voeren: `sudo nano /etc/hosts`.
+OF in het bestand "/etc/hosts" kan je controleren dat "arthurisgeenjaak.com" in voorkomt. Dit kan u bekijken door in de shell het volgende commando in te voeren: `sudo cat /etc/hosts`.
 
 U kan dit oplossen door:
 
-1. Deze handmatig aan te maken in de host-file, door `sudo nano /etc/hosts` in de shell in te geven. Daarna "arthurisgeenjaak.com" in dit bestand te schrijven, het bestand op te slaan en af te sluiten.
-2. Het PowerShell script nogmaals uitvoeren. Deze zal enkel de bash scripts uitvoeren aangezien de VM's al bestaan.
+1. U voegt deze handmatig toe als het script niet correct heeft gewerkt door het commando `sudo nano /etc/hosts` uit te voeren en daar te controleren of het gegeven ubuntu server ip er in staat en vervolgens arthurisgeenjaak.com er naast te typen.
+2. Deze zal enkel de bash scripts uitvoeren die niet correct hebben gewerkt aangezien de VM's al bestaan en bepaalde gedeeltes van de installatie al gebeurd zijn.
 
    Nu zou dit te zien moeten zijn.
 
