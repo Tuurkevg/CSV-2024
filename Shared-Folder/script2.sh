@@ -9,7 +9,8 @@ export readonly APACHE_LOG_DIR="/var/log/apache2"
 sudo apt update -y
 sudo apt install apache2 software-properties-common unzip -y
 sudo add-apt-repository ppa:ondrej/php -y
-sudo apt-get install php7.4 libapache2-mod-php7.4 php7.4-{cli,common,curl,zip,gd,mysql,xml,mbstring,json,intl,ldap,apcu,soap} -y
+sudo apt update -y
+sudo apt install php7.4 libapache2-mod-php7.4 php7.4-{cli,common,curl,zip,gd,mysql,xml,mbstring,json,intl,ldap,apcu,soap} -y
 
 
 echo "------------mariadb isntallatie-------------"
