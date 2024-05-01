@@ -35,7 +35,9 @@ if [ "${VBOX_VERSION}" != "${INSTALLED_VERSION}" ]; then
     echo "-----Updated to version: $VBOX_VERSION-----------"
     echo "-----VirtualBox Guest Additions installed successfully.-----"
     echo "--------------Restarting the server...---------------------"
+    echo "klaar"
     echo 'osboxes.org' | sudo -S reboot
 else
     echo "-------------------------The latest version of VirtualBox Guest Additions ${VBOX_VERSION} is already installed.------------------------------------"
+    echo "klaar"
 fi
