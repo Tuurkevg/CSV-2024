@@ -1,6 +1,7 @@
 #!/bin/bash
 # Fetch VirtualBox Guest Additions version from latest.txt
-sudo apt install curl -y
+echo "installeren van curl"
+echo 'osboxes.org' | sudo -S apt install curl -y
 VBOX_VERSION=$(curl -sSL https://download.virtualbox.org/virtualbox/LATEST.TXT)
 
 # Get the currently installed version, if any
