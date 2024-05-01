@@ -167,6 +167,10 @@ Invoke-SSHStreamExpectSecureAction -ShellStream $stream -Command "sudo su -" -Ex
 Invoke-SSHStreamShellCommand -ShellStream $stream -Command "$guestupdatesh > guestupdate.sh"
 Invoke-SSHStreamShellCommand -ShellStream $stream -Command "chmod +x guestupdate.sh"
 Invoke-SSHStreamShellCommand -ShellStream $stream -Command "sudo -S bash guestupdate.sh"
+
+# Wacht tot het script klaar is
+$stream.Expect("klaar")
+
 # Remove the SSH session
 Remove-SSHSession -SSHSession $sshSession
 
