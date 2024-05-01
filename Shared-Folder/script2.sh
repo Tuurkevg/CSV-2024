@@ -18,7 +18,7 @@ sudo apt install mariadb-server unzip -y
 echo "-------------------Controleren of MariaDB-service is ingeschakeld en actief is----------------------------"
 # Controleer of de apache2 service al actief is
 
-sudo systemctl start mariadb.service ssh
+sudo systemctl start mariadb ssh
 
 sudo systemctl enable --now mariadb.service
 
@@ -48,9 +48,16 @@ sudo systemctl restart mairadb
 #---------------------------------------------------------------#
 
 
-wget https://github.com/chamilo/chamilo-lms/releases/download/v1.11.18/chamilo-1.11.18-php74.zip
-unzip chamilo-1.11.18-php74.zip
-mv chamilo-1.11.18 /var/www/html/chamilo --verbose
+if [ -d "/var/www/html/chamilo/chamilo-1.11.18" ]; then
+    echo "---------------------chamlilo zip bestan dis al uitgepakt.-----------------------"
+else
+    # Download en pak het zipbestand uit
+    wget https://github.com/chamilo/chamilo-lms/releases/download/v1.11.18/chamilo-1.11.18-php74.zip
+    unzip chamilo-1.11.18-php74.zip
+    
+    # Verplaats de uitgepakte map naar de juiste locatie
+    mv chamilo-1.11.18 /var/www/html/chamilo --verbose
+fi
 
 echo "-------------------------------apache site chamilo----------------------"
 VHOST_CONF="${APACHE_CONF_DIR}/chamilo.conf"
@@ -88,11 +95,26 @@ cp /media/sf_gedeelde_map/configuration.php /var/www/html/chamilo/app/config/
 chown -R www-data:www-data /var/www/html/chamilo
 chmod -R 755 /var/www/html/chamilo
 
-echo "-------------------installatie van libreoffice----------------------"
-wget http://downloadarchive.documentfoundation.org/libreoffice/old/4.2.8.2/deb/x86_64/LibreOffice_4.2.8.2_Linux_x86-64_deb.tar.gz
-tar -xvf LibreOffice_4.2.8.2_Linux_x86-64_deb.tar.gz 
-cd LibreOffice_4.2.8.2_Linux_x86-64_deb/DEBS
-dpkg -i *.deb
+# Controleer of LibreOffice al is geïnstalleerd
+if command -v libreoffice &>/dev/null; then
+    echo "---------------LibreOffice is al geïnstalleerd. Geen actie nodig.---------------------"
+else
+    # Download LibreOffice
+    echo "-------------LibreOffice wordt gedownload...------------------"
+    wget http://downloadarchive.documentfoundation.org/libreoffice/old/4.2.8.2/deb/x86_64/LibreOffice_4.2.8.2_Linux_x86-64_deb.tar.gz
+    
+    # Pak het archief uit
+    echo "LibreOffice wordt uitgepakt..."
+    tar -xvf LibreOffice_4.2.8.2_Linux_x86-64_deb.tar.gz 
+    
+    # Ga naar de map met de pakketten
+    cd LibreOffice_4.2.8.2_Linux_x86-64_deb/DEBS
+    
+    # Installeer de deb-pakketten
+    echo "LibreOffice wordt geïnstalleerd..."
+    sudo dpkg -i *.deb
+fi
+
 
 echo "instalaltie java dependecys en screen"
 sudo apt install screen -y
@@ -100,5 +122,7 @@ sudo apt install libxinerama1 -y
 sudo apt install default-jre -y
 sudo apt-get install libdbus-glib-1-2 -y
 
+echo "socket openen en op achtergrond zetten........"
 /opt/libreoffice4.2/program/soffice.bin --accept="socket,host=127.0.0.1,port=2002,tcpNoDelay=1;urp;" --headless --nodefault --nofirststartwizard --nolockcheck --nologo --norestore &
 /opt/libreoffice4.2/program/soffice.bin --accept="socket,host=127.0.0.1,port=2002,tcpNoDelay=1;urp;" --headless --nodefault --nofirststartwizard --nolockcheck --nologo --norestore &
+echo "--------------------SCRIPT2 SUCCESVOL AFGEROND-------------------------------"

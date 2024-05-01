@@ -6,10 +6,10 @@ VBOX_VERSION=$(curl -sSL https://download.virtualbox.org/virtualbox/LATEST.TXT)
 
 # Get the currently installed version, if any
 INSTALLED_VERSION=$(VBoxClient --version 2>/dev/null || echo "Not installed" | awk '{print $1}' | cut -d 'r' -f 1)
-echo "Installed version: $INSTALLED_VERSION"
-echo "Latest version: $VBOX_VERSION"
+echo "Installed version: ${INSTALLED_VERSION}"
+echo "Latest version: ${VBOX_VERSION}"
 # Compare the current installed version with the latest available version
-if [ "$VBOX_VERSION" != "$INSTALLED_VERSION" ]; then
+if [ "${VBOX_VERSION}" != "${INSTALLED_VERSION}" ]; then
     # Update package list and install dependencies
     echo 'osboxes.org' | sudo -S apt update
     echo 'osboxes.org' | sudo -S apt install -y libxt6 libxmu6 wget build-essential dkms linux-headers-$(uname -r) wget
