@@ -2,6 +2,9 @@
 #C:\Users\Arthur\Downloads/Ubuntu Server 23.04 (64bit).vdi
 #C:\Users\Arthur\Documents\Github\CSV-2024\Shared-Folder
 # Functie om het absolute pad van een bestand te krijgen
+write-host "-----------------VM CREATOR-----------------"
+Write-Host "installeren dependencys powershell lokaal!"
+Install-Module -Name Posh-SSH -Scope CurrentUser -Force
 function Get-AbsolutePath {
     param([string]$Path)
     $AbsolutePath = Convert-Path $Path
@@ -41,7 +44,7 @@ $SharedFolderPath = Get-AbsolutePath -Path $SharedFolderPath
 #inhoud kopieren van updaten guestediiotions
 $guestupdatesh = Get-Content -Path "$SharedFolderPath/guestupdate.sh" -Raw
 #username voor ssh login
-$Username = "osboxes"
+$username = "osboxes"
 #-------------------------------------------------------------------------------------ADAPTER OPTIE MENU--------------------------------------------------------------------------------------------------------------
 
 
@@ -145,11 +148,26 @@ $ipAddressUbuntu = $(VBoxManage guestproperty get "Ubuntu server" "/VirtualBox/G
 
 Write-Host "-------------------------------UPDATEN VAN GUEST EDITIONS UBUNTU SERVER------------------------------------------------"
 # Voer het Bash-script uit op de Linux VM met SSH en wachtwoord authenticatie
-Write-Host "------------------------GEEF HET WACHTWOORD OSBOXES.ORG IN!!!!! Ubuntu Server---------------------------------------------------"
+#Write-Host "------------------------GEEF HET WACHTWOORD OSBOXES.ORG IN!!!!! Ubuntu Server---------------------------------------------------"
+#ssh -o StrictHostKeyChecking=no $Username@$ipAddressUbuntu "$guestupdatesh > guestupdate.sh && chmod +x guestupdate.sh && echo 'osboxes.org'| sudo -S bash guestupdate.sh"
 
-ssh -o StrictHostKeyChecking=no $Username@$ipAddressUbuntu "$guestupdatesh > guestupdate.sh && chmod +x guestupdate.sh && echo 'osboxes.org'| sudo -S bash guestupdate.sh"
+Write-Host "installeren dependencys powershell lokaal!"
+$ipAddressUbuntu = $(VBoxManage guestproperty get "Ubuntu server" "/VirtualBox/GuestInfo/Net/0/V4/IP").Replace("Value: ", "").Trim()
+$password = "osboxes.org" | ConvertTo-SecureString -AsPlainText -Force
+# Create credential object
+$credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $username, $password 
+# Establish SSH session
+$sshSession = New-SSHSession -ComputerName "$ipAddressUbuntu" -Credential $credential -Force
+# Create shell stream for command execution
+$stream = $sshSession.Session.CreateShellStream("BASH-SHH", 0, 0, 0, 0, 100000)
+# Read initial data from the stream
+$stream.Read()
+Invoke-SSHStreamExpectSecureAction -ShellStream $stream -Command "sudo su -" -ExpectString "[sudo] password for ${username}:" -SecureAction $password
+Invoke-SSHStreamShellCommand -ShellStream $stream -Command "$guestupdatesh > guestupdate.sh && chmod +x guestupdate.sh && echo 'osboxes.org'| sudo -S bash guestupdate.sh"  
+# Remove the SSH session
+Remove-SSHSession -SSHSession $sshSession
 
-# Oneindige lus tot de VM is opgestart
+# --------------------------Oneindige lus tot de VM is opgestart----------------------------
 while ($true) {
     # Voer de VBoxManage-opdracht uit en leid de uitvoer naar $null
     $null = VBoxManage --nologo guestcontrol "Ubuntu server" run --exe "/bin/bash" --username osboxes --password osboxes.org  --wait-stdout  -- -c "echo 'osboxes.org'" --quiet --no-verbose >$null 2>&1
