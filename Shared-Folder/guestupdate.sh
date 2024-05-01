@@ -6,7 +6,7 @@ VBOX_VERSION=$(curl -sSL https://download.virtualbox.org/virtualbox/LATEST.TXT)
 INSTALLED_VERSION=$(VBoxClient --version 2>/dev/null || echo "Not installed" | awk '{print $1}' | cut -d 'r' -f 1)
 echo "Installed version: $INSTALLED_VERSION"
 echo "Latest version: $VBOX_VERSION"
-
+sudo apt install curl -y
 # Compare the current installed version with the latest available version
 if [ "$VBOX_VERSION" != "$INSTALLED_VERSION" ]; then
     # Update package list and install dependencies
