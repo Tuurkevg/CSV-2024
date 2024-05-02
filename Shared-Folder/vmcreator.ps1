@@ -3,8 +3,6 @@
 #C:\Users\Arthur\Documents\Github\CSV-2024\Shared-Folder
 # Functie om het absolute pad van een bestand te krijgen
 write-host "-----------------VM CREATOR-----------------"
-Write-Host "installeren dependencys powershell lokaal!"
-Install-Module -Name Posh-SSH -Scope CurrentUser -Force
 function Get-AbsolutePath {
     param([string]$Path)
     $AbsolutePath = Convert-Path $Path
@@ -45,13 +43,13 @@ $SharedFolderPath = Get-AbsolutePath -Path $SharedFolderPath
 $guestupdatesh = Get-Content -Path "$SharedFolderPath/guestupdate.sh" -Raw
 #username voor ssh login
 $username = "osboxes"
-#password voor ssh login
-$password = "osboxes.org" | ConvertTo-SecureString -AsPlainText -Force
+Write-Host "installeren dependencys powershell lokaal!"
+Install-Module -Name Posh-SSH -Scope CurrentUser -Force
 #-------------------------------------------------------------------------------------ADAPTER OPTIE MENU--------------------------------------------------------------------------------------------------------------
 
 
 # Lijst van bridged network interfaces ophalen en filteren op naam
-$bridgedInterfaces = VBoxManage list bridgedifs | Select-String "Name:" | ForEach-Object { $_.ToString().Trim() -replace '^Name:\s+' }
+$bridgedInterfaces = VBoxManage.exe list bridgedifs | Select-String "Name:" | ForEach-Object { $_.ToString().Trim() -replace '^Name:\s+' }
 
 # Controleren of er bridged interfaces zijn
 if ($bridgedInterfaces) {
@@ -83,7 +81,7 @@ if ($bridgedInterfaces) {
 #-------------------------------------------------------------------------------------EINDE---ADAPTER OPTIE MENU--------------------------------------------------------------------------------------------------------------
 
 # Controleer of de Ubuntu Server VM al bestaat
-$UbuntuVMExists = & VBoxManage showvminfo "Ubuntu server" --machinereadable 2>$null
+$UbuntuVMExists = & VBoxManage.exe showvminfo "Ubuntu server" --machinereadable 2>$null
 if ($UbuntuVMExists) {
     Write-Host "De VM 'Ubuntu server' bestaat al."
 } else {
@@ -96,7 +94,7 @@ if ($UbuntuVMExists) {
 }
 
 # Controleer of de Kali Linux VM al bestaat
-$kaliVMExists = & VBoxManage showvminfo "Kali Linux" --machinereadable 2>$null
+$kaliVMExists = & VBoxManage.exe showvminfo "Kali Linux" --machinereadable 2>$null
 if ($kaliVMExists) {
     Write-Host "De VM 'Kali Linux' bestaat al."
 } else {
@@ -142,7 +140,7 @@ while ($true) {
         Start-Sleep -Seconds 5
     }
 }
-
+Write-Host " #--------------------------UITVOEREN VAN bash scripts---------------------------------------#"
 # Variables
 Write-Host "Het IP-adres van de Ubuntu-server wordt opgehaald..."
 $ipAddressUbuntu = $(VBoxManage guestproperty get "Ubuntu server" "/VirtualBox/GuestInfo/Net/0/V4/IP").Replace("Value: ", "").Trim()
@@ -153,8 +151,9 @@ Write-Host "-------------------------------UPDATEN VAN GUEST EDITIONS UBUNTU SER
 #Write-Host "------------------------GEEF HET WACHTWOORD OSBOXES.ORG IN!!!!! Ubuntu Server---------------------------------------------------"
 #ssh -o StrictHostKeyChecking=no $Username@$ipAddressUbuntu "$guestupdatesh > guestupdate.sh && chmod +x guestupdate.sh && echo 'osboxes.org'| sudo -S bash guestupdate.sh"
 
-Write-Host "installeren dependencys powershell lokaal!"
+
 $ipAddressUbuntu = $(VBoxManage guestproperty get "Ubuntu server" "/VirtualBox/GuestInfo/Net/0/V4/IP").Replace("Value: ", "").Trim()
+$password = "osboxes.org" | ConvertTo-SecureString -AsPlainText -Force
 # Create credential object
 $credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $username, $password 
 # Establish SSH session
@@ -164,13 +163,7 @@ $stream = $sshSession.Session.CreateShellStream("BASH-SHH", 0, 0, 0, 0, 100000)
 # Read initial data from the stream
 $stream.Read()
 Invoke-SSHStreamExpectSecureAction -ShellStream $stream -Command "sudo su -" -ExpectString "[sudo] password for ${username}:" -SecureAction $password
-Invoke-SSHStreamShellCommand -ShellStream $stream -Command "$guestupdatesh > guestupdate.sh"
-Invoke-SSHStreamShellCommand -ShellStream $stream -Command "chmod +x guestupdate.sh"
-Invoke-SSHStreamShellCommand -ShellStream $stream -Command "sudo -S bash guestupdate.sh"
-
-# Wacht tot het script klaar is
-$stream.Expect("klaar")
-
+Invoke-SSHStreamShellCommand -ShellStream $stream -Command "$guestupdatesh > guestupdate.sh && chmod +x guestupdate.sh && echo 'osboxes.org'| sudo -S bash guestupdate.sh"  
 # Remove the SSH session
 Remove-SSHSession -SSHSession $sshSession
 
@@ -190,7 +183,7 @@ while ($true) {
         Start-Sleep -Seconds 5
     }
 }
-Write-Host " #--------------------------UITVOEREN VAN bash scripts---------------------------------------#"
+
 write-host "---------------------------uitvoeren van script1.sh op Ubuntu server-----------------------------------------------------------------"
 VBoxManage --nologo guestcontrol "Ubuntu server" run --exe "/bin/bash" --username osboxes --password osboxes.org  --wait-stdout  -- -c "echo 'osboxes.org' | sudo -S  /media/sf_gedeelde_map/script1.sh"
 Start-Sleep -Seconds 2
