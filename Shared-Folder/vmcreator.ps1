@@ -166,13 +166,13 @@ Invoke-SSHStreamExpectSecureAction -ShellStream $stream -Command "sudo su -" -Ex
 Invoke-SSHStreamShellCommand -ShellStream $stream -Command "cp /media/sf_gedeelde_map/guestupdate.sh /home/osboxes/guestupdate.sh"
 Invoke-SSHStreamShellCommand -ShellStream $stream -Command "chmod +x /home/osboxes/guestupdate.sh"
 Invoke-SSHStreamShellCommand -ShellStream $stream -Command "bash /home/osboxes/guestupdate.sh && echo 'EINDESSH'"
-write-host "EINDE SSH SESSION WACHT OP REBOOT..."
+
 $stream.Expect("EINDESSH")
 
 
 # Remove the SSH session
 Remove-SSHSession -SSHSession $sshSession
-
+write-host "EINDE SSH SESSION WACHT OP REBOOT..."
 # --------------------------Oneindige lus tot de VM is opgestart----------------------------
 while ($true) {
     # Voer de VBoxManage-opdracht uit en leid de uitvoer naar $null
