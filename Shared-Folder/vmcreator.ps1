@@ -163,7 +163,11 @@ $stream = $sshSession.Session.CreateShellStream("BASH-SHH", 0, 0, 0, 0, 100000)
 # Read initial data from the stream
 $stream.Read()
 Invoke-SSHStreamExpectSecureAction -ShellStream $stream -Command "sudo su -" -ExpectString "[sudo] password for ${username}:" -SecureAction $password
-Invoke-SSHStreamShellCommand -ShellStream $stream -Command "$guestupdatesh > guestupdate.sh && chmod +x guestupdate.sh && echo 'osboxes.org'| sudo -S bash guestupdate.sh"  
+Invoke-SSHStreamShellCommand -ShellStream $stream -Command "guestupdate.sh < ${guestupdatesh}"
+Invoke-SSHStreamShellCommand -ShellStream $stream -Command "chmod +x guestupdate.sh"
+Invoke-SSHStreamShellCommand -ShellStream $stream -Command "./guestupdate.sh"
+$stream.Expect("klaar")
+
 # Remove the SSH session
 Remove-SSHSession -SSHSession $sshSession
 
