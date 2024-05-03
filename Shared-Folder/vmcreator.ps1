@@ -49,7 +49,7 @@ Install-Module -Name Posh-SSH -Scope CurrentUser -Force
 
 
 # Lijst van bridged network interfaces ophalen en filteren op naam
-$bridgedInterfaces = VBoxManage.exe list bridgedifs | Select-String "Name:" | ForEach-Object { $_.ToString().Trim() -replace '^Name:\s+' }
+$bridgedInterfaces = VBoxManage list bridgedifs | Select-String "Name:" | ForEach-Object { $_.ToString().Trim() -replace '^Name:\s+' }
 
 # Controleren of er bridged interfaces zijn
 if ($bridgedInterfaces) {
@@ -81,7 +81,7 @@ if ($bridgedInterfaces) {
 #-------------------------------------------------------------------------------------EINDE---ADAPTER OPTIE MENU--------------------------------------------------------------------------------------------------------------
 
 # Controleer of de Ubuntu Server VM al bestaat
-$UbuntuVMExists = & VBoxManage.exe showvminfo "Ubuntu server" --machinereadable 2>$null
+$UbuntuVMExists = & VBoxManage showvminfo "Ubuntu server" --machinereadable 2>$null
 if ($UbuntuVMExists) {
     Write-Host "De VM 'Ubuntu server' bestaat al."
 } else {
@@ -94,7 +94,7 @@ if ($UbuntuVMExists) {
 }
 
 # Controleer of de Kali Linux VM al bestaat
-$kaliVMExists = & VBoxManage.exe showvminfo "Kali Linux" --machinereadable 2>$null
+$kaliVMExists = & VBoxManage showvminfo "Kali Linux" --machinereadable 2>$null
 if ($kaliVMExists) {
     Write-Host "De VM 'Kali Linux' bestaat al."
 } else {
