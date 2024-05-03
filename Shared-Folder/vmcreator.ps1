@@ -39,12 +39,8 @@ if (-not (Test-Path $SharedFolderPath)) {
 
 # Krijg het absolute pad van de gedeelde map
 $SharedFolderPath = Get-AbsolutePath -Path $SharedFolderPath
-#inhoud kopieren van updaten guestediiotions
-$guestupdatesh = Get-Content -Path "$SharedFolderPath/guestupdate.sh" -Raw
-#username voor ssh login
-$username = "osboxes"
-Write-Host "installeren dependencys powershell lokaal!"
-Install-Module -Name Posh-SSH -Scope CurrentUser -Force
+
+
 #-------------------------------------------------------------------------------------ADAPTER OPTIE MENU--------------------------------------------------------------------------------------------------------------
 
 
@@ -79,7 +75,8 @@ if ($bridgedInterfaces) {
 }
 
 #-------------------------------------------------------------------------------------EINDE---ADAPTER OPTIE MENU--------------------------------------------------------------------------------------------------------------
-
+Write-Host "installeren dependencys powershell lokaal!"
+Install-Module -Name Posh-SSH -Scope CurrentUser -Force
 # Controleer of de Ubuntu Server VM al bestaat
 $UbuntuVMExists = & VBoxManage showvminfo "Ubuntu server" --machinereadable 2>$null
 if ($UbuntuVMExists) {
@@ -154,6 +151,8 @@ Write-Host "-------------------------------UPDATEN VAN GUEST EDITIONS UBUNTU SER
 
 $ipAddressUbuntu = $(VBoxManage guestproperty get "Ubuntu server" "/VirtualBox/GuestInfo/Net/0/V4/IP").Replace("Value: ", "").Trim()
 $password = "osboxes.org" | ConvertTo-SecureString -AsPlainText -Force
+#username voor ssh login
+$username = "osboxes"
 # Create credential object
 $credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $username, $password 
 # Establish SSH session
@@ -162,11 +161,14 @@ $sshSession = New-SSHSession -ComputerName "$ipAddressUbuntu" -Credential $crede
 $stream = $sshSession.Session.CreateShellStream("BASH-SHH", 0, 0, 0, 0, 100000)
 # Read initial data from the stream
 $stream.Read()
+write-host "--------------------------SSH SESSION GESTART--------------------------------- DIT KAN EVENTJES DUREN"
 Invoke-SSHStreamExpectSecureAction -ShellStream $stream -Command "sudo su -" -ExpectString "[sudo] password for ${username}:" -SecureAction $password
-Invoke-SSHStreamShellCommand -ShellStream $stream -Command "guestupdate.sh < ${guestupdatesh}"
-Invoke-SSHStreamShellCommand -ShellStream $stream -Command "chmod +x guestupdate.sh"
-Invoke-SSHStreamShellCommand -ShellStream $stream -Command "./guestupdate.sh"
-$stream.Expect("klaar")
+Invoke-SSHStreamShellCommand -ShellStream $stream -Command "cp /media/sf_gedeelde_map/guestupdate.sh /home/osboxes/guestupdate.sh"
+Invoke-SSHStreamShellCommand -ShellStream $stream -Command "chmod +x /home/osboxes/guestupdate.sh"
+Invoke-SSHStreamShellCommand -ShellStream $stream -Command "bash /home/osboxes/guestupdate.sh && echo 'EINDESSH'"
+write-host "EINDE SSH SESSION WACHT OP REBOOT..."
+$stream.Expect("EINDESSH")
+
 
 # Remove the SSH session
 Remove-SSHSession -SSHSession $sshSession
