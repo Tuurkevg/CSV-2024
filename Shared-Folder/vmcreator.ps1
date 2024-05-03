@@ -204,8 +204,9 @@ write-host "-----------------------------------------domain naam ophalen--------
 $DOMAIN_NAME =$(VBoxManage --nologo guestcontrol "Ubuntu server" run --exe "/bin/bash" --username osboxes --password osboxes.org  --wait-stderr --wait-stdout  -- -c "grep -oP 'ServerName \K.*' /etc/apache2/sites-available/wordpress.conf")
 Start-Sleep -Seconds 2
 $DOMAIN_NAME =$(VBoxManage --nologo guestcontrol "Ubuntu server" run --exe "/bin/bash" --username osboxes --password osboxes.org  --wait-stderr --wait-stdout  -- -c "grep -oP 'ServerName \K.*' /etc/apache2/sites-available/wordpress.conf")
-
+$DOMAIN_NAME =$(VBoxManage --nologo guestcontrol "Ubuntu server" run --exe "/bin/bash" --username osboxes --password osboxes.org  --wait-stderr --wait-stdout  -- -c "grep -oP 'ServerName \K.*' /etc/apache2/sites-available/wordpress.conf")
 Start-Sleep -Seconds 2
+
 
 Write-Host "-----------------------------rootpromotie.sh script uitvoeren----------------------"
 VBoxManage --nologo guestcontrol "Kali Linux" run --exe "/bin/bash" --username osboxes --password osboxes.org  --wait-stdout -- "/home/osboxes/rootpromotie.sh"
@@ -219,8 +220,12 @@ Start-Sleep -Seconds 2
 VBoxManage --nologo guestcontrol "Kali Linux" run --exe "/bin/bash" --username root --password osboxes.org  --wait-stdout  -- -c "echo $ipAddressUbuntu $DOMAIN_NAME >> /etc/hosts"
 
 
+
+
+
 # Schrijf het IP-adres naar de console
 Write-Host "------------------EINDE SCRIPT; CONTROLEER OF BEIDE WAARDES HIERONDER CORRECT WORDEN WEERGEGEVEN----------------------"
 Write-Host "IP-adres van Ubuntu-server (mag niet leeg zijn): $ipAddressUbuntu"
 #schrijf domain naam eens af om te controelren of dit klopt
+$DOMAIN_NAME =$(VBoxManage --nologo guestcontrol "Ubuntu server" run --exe "/bin/bash" --username osboxes --password osboxes.org  --wait-stderr --wait-stdout  -- -c "grep -oP 'ServerName \K.*' /etc/apache2/sites-available/wordpress.conf")
 Write-Host "domein naam van Ubuntu-server webserver (mag niet leeg zijn): $DOMAIN_NAME"
