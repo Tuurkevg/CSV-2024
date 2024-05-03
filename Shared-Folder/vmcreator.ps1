@@ -159,15 +159,16 @@ $credential = New-Object -TypeName System.Management.Automation.PSCredential -Ar
 $sshSession = New-SSHSession -ComputerName "$ipAddressUbuntu" -Credential $credential -Force
 # Create shell stream for command execution
 $stream = $sshSession.Session.CreateShellStream("BASH-SHH", 0, 0, 0, 0, 100000)
+write-host "--------------------------SSH SESSION GESTART--------------------------------- DIT KAN EVENTJES DUREN"
 # Read initial data from the stream
 $stream.Read()
-write-host "--------------------------SSH SESSION GESTART--------------------------------- DIT KAN EVENTJES DUREN"
+
 Invoke-SSHStreamExpectSecureAction -ShellStream $stream -Command "sudo su -" -ExpectString "[sudo] password for ${username}:" -SecureAction $password
 Invoke-SSHStreamShellCommand -ShellStream $stream -Command "cp /media/sf_gedeelde_map/guestupdate.sh /home/osboxes/guestupdate.sh"
 Invoke-SSHStreamShellCommand -ShellStream $stream -Command "chmod +x /home/osboxes/guestupdate.sh"
-Invoke-SSHStreamShellCommand -ShellStream $stream -Command "bash /home/osboxes/guestupdate.sh && echo 'EINDESSH'"
+Invoke-SSHStreamShellCommand -ShellStream $stream -Command "bash /home/osboxes/guestupdate.sh && echo 'plopkoek'"
 
-$stream.Expect("EINDESSH")
+$stream.Expect("plopkoek")
 
 
 # Remove the SSH session
