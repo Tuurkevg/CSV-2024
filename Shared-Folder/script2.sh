@@ -1,8 +1,9 @@
+#!/bin/bash
 export readonly db_root_password='Test123'
 export readonly db_name='chamilo'
 export readonly db_user='root'
 export readonly db_password='Test123'
-export readonly  APACHE_CONF_DIR="/etc/apache2/sites-available"
+export readonly APACHE_CONF_DIR="/etc/apache2/sites-available"
 export readonly DOMAIN_NAME="jaakisgeenarthur.com"
 export readonly APACHE_LOG_DIR="/var/log/apache2"
 
@@ -19,9 +20,9 @@ sudo apt install mariadb-server unzip -y
 echo "-------------------Controleren of MariaDB-service is ingeschakeld en actief is----------------------------"
 # Controleer of de apache2 service al actief is
 
-sudo systemctl start mariadb ssh
+sudo systemctl start mariadb
 
-sudo systemctl enable --now mariadb.service
+sudo systemctl enable --now mariadb
 
 is_mysql_root_password_empty() {
   mysqladmin --user=root status > /dev/null 2>&1
@@ -49,15 +50,17 @@ sudo systemctl restart mairadb
 #---------------------------------------------------------------#
 
 
-if [ -d "/var/www/html/chamilo/chamilo-1.11.18" ]; then
-    echo "---------------------chamlilo zip bestan dis al uitgepakt.-----------------------"
+if [ -d "/var/www/html/chamilo" ]; then
+    echo "---------------------chamlilo zip bestand is al uitgepakt.-----------------------"
 else
     # Download en pak het zipbestand uit
-    wget https://github.com/chamilo/chamilo-lms/releases/download/v1.11.18/chamilo-1.11.18-php74.zip
-    unzip chamilo-1.11.18-php74.zip
-    
+    sudo wget -v -P /home/osboxes https://github.com/chamilo/chamilo-lms/releases/download/v1.11.18/chamilo-1.11.18-php74.zip
+    sudo unzip /home/osboxes/chamilo-1.11.18-php74.zip -d /home/osboxes/
+
     # Verplaats de uitgepakte map naar de juiste locatie
-    mv chamilo-1.11.18 /var/www/html/chamilo --verbose
+    sudo mv /home/osboxes/chamilo-1.11.18 /var/www/html/chamilo --verbose
+    sudo rm -rf /home/osboxes/chamilo-1.11.18-php74.zip
+    sudo rm -rf /home/osboxes/chamilo-1.11.18
 fi
 
 echo "-------------------------------apache site chamilo----------------------"
@@ -97,33 +100,37 @@ chown -R www-data:www-data /var/www/html/chamilo
 chmod -R 755 /var/www/html/chamilo
 
 # Controleer of LibreOffice al is geïnstalleerd
-if command -v libreoffice &>/dev/null; then
-    echo "---------------LibreOffice is al geïnstalleerd. Geen actie nodig.---------------------"
+if [ -e "/usr/bin/libreoffice4.2" ]; then
+    echo "---------------LibreOffice4.2 is al geïnstalleerd. Geen actie nodig.---------------------"
 else
     # Download LibreOffice
-    echo "-------------LibreOffice wordt gedownload...------------------"
-    wget http://downloadarchive.documentfoundation.org/libreoffice/old/4.2.8.2/deb/x86_64/LibreOffice_4.2.8.2_Linux_x86-64_deb.tar.gz
+    echo "-----------------------------------------------------LibreOffice wordt gedownload...-----------------------------------------------------------------------"
+    sudo wget -v -P /home/osboxes http://downloadarchive.documentfoundation.org/libreoffice/old/4.2.8.2/deb/x86_64/LibreOffice_4.2.8.2_Linux_x86-64_deb.tar.gz
     
     # Pak het archief uit
-    echo "LibreOffice wordt uitgepakt..."
-    tar -xvf LibreOffice_4.2.8.2_Linux_x86-64_deb.tar.gz 
+    echo "------------------------------------LibreOffice wordt uitgepakt...------------------------------------"
+    tar -xvf /home/osboxes/LibreOffice_4.2.8.2_Linux_x86-64_deb.tar.gz -C /home/osboxes/ 
     
     # Ga naar de map met de pakketten
-    cd LibreOffice_4.2.8.2_Linux_x86-64_deb/DEBS
+    cd /home/osboxes/LibreOffice_4.2.8.2_Linux_x86-64_deb/DEBS
     
     # Installeer de deb-pakketten
     echo "LibreOffice wordt geïnstalleerd..."
     sudo dpkg -i *.deb
+    echo "-------files verwijderen di eonnodig zijn-------------------------------"
+    rm -rf /home/osboxes/LibreOffice_4.2.8.2_Linux_x86-64_deb
+    rm -rf /home/osboxes/LibreOffice_4.2.8.2_Linux_x86-64_deb.tar.gz
 fi
 
 
-echo "instalaltie java dependecys en screen"
+echo "-----------------------------------instalaltie java dependecys en screen---------------------------"
 sudo apt install screen -y
 sudo apt install libxinerama1 -y
 sudo apt install default-jre -y
 sudo apt-get install libdbus-glib-1-2 -y
-
+sudo systemctl restart apache2
 echo "socket openen en op achtergrond zetten........"
-/opt/libreoffice4.2/program/soffice.bin --accept="socket,host=127.0.0.1,port=2002,tcpNoDelay=1;urp;" --headless --nodefault --nofirststartwizard --nolockcheck --nologo --norestore &
-/opt/libreoffice4.2/program/soffice.bin --accept="socket,host=127.0.0.1,port=2002,tcpNoDelay=1;urp;" --headless --nodefault --nofirststartwizard --nolockcheck --nologo --norestore &
+nohup /opt/libreoffice4.2/program/soffice.bin --accept="socket,host=127.0.0.1,port=2002,tcpNoDelay=1;urp;" --headless --nodefault --nofirststartwizard --nolockcheck --nologo --norestore > /dev/null 2>&1 &
+
+
 echo "--------------------SCRIPT2 SUCCESVOL AFGEROND-------------------------------"

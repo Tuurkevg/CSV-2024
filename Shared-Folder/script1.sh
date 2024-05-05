@@ -1,4 +1,4 @@
-
+#!/bin/bash
 export readonly db_root_password='IcAgWaict9?slamrol'
 export readonly db_name='wordpress_db'
 export readonly db_user='wordpress_user'
@@ -15,14 +15,14 @@ export readonly WP_PASSWORD="arthur"
 export readonly WP_EMAIL="arthur@plopkoek.internal"
 
 
-apt update
-apt install -y mariadb-server unzip
+sudo apt update -y
+sudo apt install mariadb-server unzip -y 
 echo "-------------------Controleren of MariaDB-service is ingeschakeld en actief is----------------------------"
 # Controleer of de apache2 service al actief is
 
-systemctl start mariadb.service ssh
+sudo systemctl start mariadb
 
-systemctl enable --now mariadb.service
+sudo systemctl enable --now mariadb
 
 is_mysql_root_password_empty() {
   mysqladmin --user=root status > /dev/null 2>&1
@@ -46,31 +46,31 @@ GRANT ALL ON ${db_name}.* TO '${db_user}' IDENTIFIED BY '${db_password}';
 FLUSH PRIVILEGES;
 _EOF_
 
-systemctl restart mairadb
+sudo systemctl restart mairadb
 
 echo "-----------------------installeren van alle benodigde software voor de webserver----------------------------------"
-apt install -y apache2 php php-curl php-bcmath php-gd php-soap php-zip php-curl php-mbstring php-mysqlnd php-gd php-xml php-intl php-zip
+sudo apt install apache2 php php-curl php-bcmath php-gd php-soap php-zip php-curl php-mbstring php-mysqlnd php-gd php-xml php-intl php-zip  -y 
 
 # echo het starten van de apache service
 echo "------------------starten van apache2 service apache---------------------"
 
 # Controleer of de apache2 service al actief is
 
-systemctl start apache2
+sudo systemctl start apache2
 # Controleer of de apache2 service al ingeschakeld is om bij opstart te starten
-systemctl enable apache2
+sudo systemctl enable apache2
 
 echo "-------------------apache2 service is geactiveerd en actief----------------------" 
 
 echo "-----------------------installatie van WORDPRESS---------------------------------"
 # Controleer of WordPress nog niet is geïnstalleerd
-if [ ! -d "/var/www/html/wordpress" ]; then
+if [ ! -f "/var/www/html/wordpress/wp-config.php" ]; then
     # Download en installeer WordPress
-     wget -P /var/www/html/ https://wordpress.org/latest.zip
-     unzip /var/www/html/latest.zip -d /var/www/html/
-     chown www-data:www-data  -R /var/www/html/wordpress/* # Let Apache be owner
-     chmod +755 /var/www/html/
-     rm /var/www/html/latest.zip  # Verwijder het zip-bestand na extractie
+     sudo wget -v -P /var/www/html/ https://wordpress.org/latest.zip
+     sudo unzip -o /var/www/html/latest.zip -d /var/www/html/
+     sudo chown www-data:www-data  -R /var/www/html/wordpress/* # Let Apache be owner
+     sudo chmod +755 /var/www/html/
+     sudo rm /var/www/html/latest.zip -rf # Verwijder het zip-bestand na extractie
 else
     echo "WordPress is al geïnstalleerd."
 fi
@@ -168,7 +168,7 @@ if ! $(/usr/local/bin/wp/wp-cli.phar core is-installed --path=/var/www/html/word
 else
 echo "---------------wordpress installatieoverslaan: al gebeurd--------------------"
 fi
-systemctl restart apache2
+sudo systemctl restart apache2
 
 echo "-------------aanpassing voor wp-json met .htacces---------------------"
 cat << EOF > /var/www/html/wordpress/.htaccess

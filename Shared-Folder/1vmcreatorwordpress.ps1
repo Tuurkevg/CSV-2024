@@ -137,40 +137,37 @@ while ($true) {
         Start-Sleep -Seconds 5
     }
 }
-Write-Host " #--------------------------UITVOEREN VAN bash scripts---------------------------------------#"
-# Variables
-Write-Host "Het IP-adres van de Ubuntu-server wordt opgehaald..."
-$ipAddressUbuntu = $(VBoxManage guestproperty get "Ubuntu server" "/VirtualBox/GuestInfo/Net/0/V4/IP").Replace("Value: ", "").Trim()
-
 
 Write-Host "-------------------------------UPDATEN VAN GUEST EDITIONS UBUNTU SERVER------------------------------------------------"
-# Voer het Bash-script uit op de Linux VM met SSH en wachtwoord authenticatie
-#Write-Host "------------------------GEEF HET WACHTWOORD OSBOXES.ORG IN!!!!! Ubuntu Server---------------------------------------------------"
-#ssh -o StrictHostKeyChecking=no $Username@$ipAddressUbuntu "$guestupdatesh > guestupdate.sh && chmod +x guestupdate.sh && echo 'osboxes.org'| sudo -S bash guestupdate.sh"
 
-
+Write-Host "Het IP-adres van de Ubuntu-server wordt opgehaald..."
 $ipAddressUbuntu = $(VBoxManage guestproperty get "Ubuntu server" "/VirtualBox/GuestInfo/Net/0/V4/IP").Replace("Value: ", "").Trim()
+Write-Host "----------------------------------------------------IP-adres van Ubuntu server: $ipAddressUbuntu-----------------------------------"
 $password = "osboxes.org" | ConvertTo-SecureString -AsPlainText -Force
 #username voor ssh login
 $username = "osboxes"
 # Create credential object
 $credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $username, $password 
-# Establish SSH session
-$sshSession = New-SSHSession -ComputerName "$ipAddressUbuntu" -Credential $credential -Force
+# Initialize SSH session variable
+$sshSession = $null
+# Loop until SSH session is established without errors, oplossing voor random errors!!
+while (-not $sshSession) {
+    # Attempt to create SSH session
+    $sshSession = New-SSHSession -ComputerName $ipAddressUbuntu -Credential $credential -Force -ErrorAction SilentlyContinue
+
+}
 # Create shell stream for command execution
 $stream = $sshSession.Session.CreateShellStream("BASH-SHH", 0, 0, 0, 0, 100000)
 write-host "--------------------------SSH SESSION GESTART--------------------------------- DIT KAN EVENTJES DUREN"
 # Read initial data from the stream
-$stream.Read()
-
+$stream.ReadLine()
+Start-Sleep -Seconds 1
 Invoke-SSHStreamExpectSecureAction -ShellStream $stream -Command "sudo su -" -ExpectString "[sudo] password for ${username}:" -SecureAction $password
-Invoke-SSHStreamShellCommand -ShellStream $stream -Command "cp /media/sf_gedeelde_map/guestupdate.sh /home/osboxes/guestupdate.sh"
-Invoke-SSHStreamShellCommand -ShellStream $stream -Command "chmod +x /home/osboxes/guestupdate.sh"
-Invoke-SSHStreamShellCommand -ShellStream $stream -Command "bash /home/osboxes/guestupdate.sh && echo 'plopkoek'"
+Start-Sleep -Seconds 1
+Invoke-SSHStreamShellCommand -ShellStream $stream -Command "bash /media/sf_gedeelde_map/guestupdate.sh && echo 'PATSER'"
+Start-Sleep -Seconds 1
 
-$stream.Expect("plopkoek")
-
-
+$stream.Expect("PATSER")
 # Remove the SSH session
 Remove-SSHSession -SSHSession $sshSession
 write-host "EINDE SSH SESSION WACHT OP REBOOT..."
@@ -192,27 +189,32 @@ while ($true) {
 }
 
 write-host "---------------------------uitvoeren van script1.sh op Ubuntu server-----------------------------------------------------------------"
+Start-Sleep -Seconds 5
+VBoxManage --nologo guestcontrol "Ubuntu server" run --exe "/bin/bash" --username osboxes --password osboxes.org  --wait-stdout  -- -c "echo 'osboxes.org' | sudo -S chmod +x /media/sf_gedeelde_map/script1.sh"
+Start-Sleep -Seconds 2
 VBoxManage --nologo guestcontrol "Ubuntu server" run --exe "/bin/bash" --username osboxes --password osboxes.org  --wait-stdout  -- -c "echo 'osboxes.org' | sudo -S  /media/sf_gedeelde_map/script1.sh"
 Start-Sleep -Seconds 2
 # geef root rechten aan osboxes voor aanpasssen hosts file...
 write-host "----------------------------------------rootpromotie.sh script kopieren naar Kali Linux----------------------------------------------------"
 VBoxManage --nologo guestcontrol "Kali Linux" copyto "$SharedFolderPath/rootpromotie.sh" "/home/osboxes/rootpromotie.sh" --username osboxes --password osboxes.org
 
-Start-Sleep -Seconds 2
-# haal het domein naam op en verwerk deze voor in de host file van Kali Linux
-write-host "-----------------------------------------domain naam ophalen-----------------------------"
-$DOMAIN_NAME =$(VBoxManage --nologo guestcontrol "Ubuntu server" run --exe "/bin/bash" --username osboxes --password osboxes.org  --wait-stderr --wait-stdout  -- -c "grep -oP 'ServerName \K.*' /etc/apache2/sites-available/wordpress.conf")
-Start-Sleep -Seconds 2
-$DOMAIN_NAME =$(VBoxManage --nologo guestcontrol "Ubuntu server" run --exe "/bin/bash" --username osboxes --password osboxes.org  --wait-stderr --wait-stdout  -- -c "grep -oP 'ServerName \K.*' /etc/apache2/sites-available/wordpress.conf")
-$DOMAIN_NAME =$(VBoxManage --nologo guestcontrol "Ubuntu server" run --exe "/bin/bash" --username osboxes --password osboxes.org  --wait-stderr --wait-stdout  -- -c "grep -oP 'ServerName \K.*' /etc/apache2/sites-available/wordpress.conf")
-Start-Sleep -Seconds 2
+# Initialiseer de variabele $DOMAIN_NAME_CHAMILO
+$DOMAIN_NAME= ""
+write-host "---------------------------ophalen van domein naam van Ubuntu server-----------------------------------------------------------------"
+# Voer het commando uit totdat $DOMAIN_NAME_CHAMILO niet meer leeg iss
+while (-not $DOMAIN_NAME) {
+    $DOMAIN_NAME = $(VBoxManage --nologo guestcontrol "Ubuntu server" run --exe "/bin/bash" --username osboxes --password osboxes.org --wait-stderr --wait-stdout -- -c "echo 'osboxes.org' | sudo -S grep -oP 'ServerName \K.*' /etc/apache2/sites-available/wordpress.conf")
+    Start-Sleep -Seconds 1  # Wacht een seconde voordat je het opnieuw probeert
+}
 
 
 Write-Host "-----------------------------rootpromotie.sh script uitvoeren----------------------"
+VBoxManage --nologo guestcontrol "Kali Linux" run --exe "/bin/bash" --username osboxes --password osboxes.org  --wait-stdout -- -c "echo 'osboxes.org' | sudo -S chmod +x /home/osboxes/rootpromotie.sh"
+Start-Sleep -Seconds 2
 VBoxManage --nologo guestcontrol "Kali Linux" run --exe "/bin/bash" --username osboxes --password osboxes.org  --wait-stdout -- "/home/osboxes/rootpromotie.sh"
 Start-Sleep -Seconds 2
 VBoxManage --nologo guestcontrol "Kali Linux" run --exe "/bin/bash" --username osboxes --password osboxes.org  --wait-stdout -- "/home/osboxes/rootpromotie.sh"
-
+Start-Sleep -Seconds 2
 # hosts file aanpasen nu met nodig egegevens MET ROOT
 write-host "---------------------------------------------------------hosts file aanpassen--------------------------------------"
 VBoxManage --nologo guestcontrol "Kali Linux" run --exe "/bin/bash" --username root --password osboxes.org  --wait-stdout  -- -c "echo $ipAddressUbuntu $DOMAIN_NAME >> /etc/hosts"
@@ -221,11 +223,9 @@ VBoxManage --nologo guestcontrol "Kali Linux" run --exe "/bin/bash" --username r
 
 
 
-
-
 # Schrijf het IP-adres naar de console
 Write-Host "------------------EINDE SCRIPT; CONTROLEER OF BEIDE WAARDES HIERONDER CORRECT WORDEN WEERGEGEVEN----------------------"
 Write-Host "IP-adres van Ubuntu-server (mag niet leeg zijn): $ipAddressUbuntu"
 #schrijf domain naam eens af om te controelren of dit klopt
 $DOMAIN_NAME =$(VBoxManage --nologo guestcontrol "Ubuntu server" run --exe "/bin/bash" --username osboxes --password osboxes.org  --wait-stderr --wait-stdout  -- -c "grep -oP 'ServerName \K.*' /etc/apache2/sites-available/wordpress.conf")
-Write-Host "domein naam van Ubuntu-server webserver (mag niet leeg zijn): $DOMAIN_NAME"
+Write-Host "domein naam van wordpress webserver (mag niet leeg zijn): $DOMAIN_NAME"
