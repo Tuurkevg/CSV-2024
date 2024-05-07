@@ -227,6 +227,8 @@ Start-Sleep -Seconds 5
 VBoxManage --nologo guestcontrol "Debian server" run --exe "/bin/bash" --username osboxes --password osboxes.org  --wait-stdout  -- -c "echo 'osboxes.org' | sudo -S /home/osboxes/script2.sh"
 Start-Sleep -Seconds 2
 VBoxManage --nologo guestcontrol "Debian server" run --exe "/bin/bash" --username osboxes --password osboxes.org  --wait-stdout  -- -c "echo 'osboxes.org' | sudo -S /home/osboxes/script2.sh"
+Start-Sleep -Seconds 2
+VBoxManage --nologo guestcontrol "Debian server" run --exe "/bin/bash" --username osboxes --password osboxes.org  --wait-stdout  -- -c "echo 'osboxes.org' | sudo -S /home/osboxes/script2.sh"
 
 # Initialiseer de variabele $DOMAIN_NAME_CHAMILO
 $DOMAIN_NAME_CHAMILO = ""
