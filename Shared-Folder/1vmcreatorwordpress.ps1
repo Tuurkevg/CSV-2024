@@ -226,7 +226,5 @@ VBoxManage --nologo guestcontrol "Kali Linux" run --exe "/bin/bash" --username r
 # Schrijf het IP-adres naar de console
 Write-Host "------------------EINDE SCRIPT; CONTROLEER OF BEIDE WAARDES HIERONDER CORRECT WORDEN WEERGEGEVEN----------------------"
 Write-Host "IP-adres van Ubuntu-server (mag niet leeg zijn): $ipAddressUbuntu"
-#schrijf domain naam eens af om te controelren of dit klopt
-$DOMAIN_NAME =$(VBoxManage --nologo guestcontrol "Ubuntu server" run --exe "/bin/bash" --username osboxes --password osboxes.org  --wait-stderr --wait-stdout  -- -c "grep -oP 'ServerName \K.*' /etc/apache2/sites-available/wordpress.conf")
 Write-Host "domein naam van wordpress webserver (mag niet leeg zijn): $DOMAIN_NAME"
 Read-Host "druk een toets om af te sluiten!!!!!!"

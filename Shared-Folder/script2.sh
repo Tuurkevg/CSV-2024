@@ -54,7 +54,7 @@ if [ -d "/var/www/html/chamilo" ]; then
     echo "---------------------chamlilo zip bestand is al uitgepakt.-----------------------"
 else
     # Download en pak het zipbestand uit
-    sudo wget -v -nv -P /home/osboxes https://github.com/chamilo/chamilo-lms/releases/download/v1.11.18/chamilo-1.11.18-php74.zip
+    sudo wget -nv -P /home/osboxes https://github.com/chamilo/chamilo-lms/releases/download/v1.11.18/chamilo-1.11.18-php74.zip
     sleep 3
     echo "unzippen chamilo....................."
     sudo unzip /home/osboxes/chamilo-1.11.18-php74.zip -d /home/osboxes/ > /dev/null
@@ -108,7 +108,7 @@ if [ -e "/usr/bin/libreoffice4.2" ]; then
 else
     # Download LibreOffice
     echo "-----------------------------------------------------LibreOffice wordt gedownload...-----------------------------------------------------------------------"
-    sudo wget -v -nv -P /home/osboxes http://downloadarchive.documentfoundation.org/libreoffice/old/4.2.8.2/deb/x86_64/LibreOffice_4.2.8.2_Linux_x86-64_deb.tar.gz
+    sudo wget -nv -P /home/osboxes http://downloadarchive.documentfoundation.org/libreoffice/old/4.2.8.2/deb/x86_64/LibreOffice_4.2.8.2_Linux_x86-64_deb.tar.gz > /dev/null
     
     # Pak het archief uit
     echo "------------------------------------LibreOffice wordt uitgepakt...------------------------------------"

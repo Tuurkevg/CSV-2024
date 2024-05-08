@@ -66,11 +66,13 @@ echo "-----------------------installatie van WORDPRESS--------------------------
 # Controleer of WordPress nog niet is geïnstalleerd
 if [ ! -f "/var/www/html/wordpress/wp-config.php" ]; then
     # Download en installeer WordPress
-     sudo wget -v -P /var/www/html/ https://wordpress.org/latest.zip
-     sudo unzip -o /var/www/html/latest.zip -d /var/www/html/
-     sudo chown www-data:www-data  -R /var/www/html/wordpress/* # Let Apache be owner
-     sudo chmod +755 /var/www/html/
-     sudo rm /var/www/html/latest.zip -rf # Verwijder het zip-bestand na extractie
+    echo "---------------------------Downloaden van WordPress----------------------"
+     sudo wget -P /var/www/html/ https://wordpress.org/latest.zip > /dev/null
+     echo "---------------------------uitpakken van WordPress----------------------"
+     sudo unzip -o /var/www/html/latest.zip -d /var/www/html/ > /dev/null
+     sudo chown www-data:www-data  -R /var/www/html/wordpress/*  > /dev/null# Let Apache be owner
+     sudo chmod +755 /var/www/html/ > /dev/null
+     sudo rm /var/www/html/latest.zip -rf > /dev/null # Verwijder het zip-bestand na extractie 
 else
     echo "WordPress is al geïnstalleerd."
 fi
@@ -148,9 +150,10 @@ echo "${WP_CONFIG_CONTENT}" |  tee "${WP_CONFIG}" >/dev/null
 # Download WP-CLI lokaal als het nog niet bestaat
 if [ ! -f "/usr/local/bin/wp/wp-cli.phar" ]; then
     mkdir -p /usr/local/bin/wp/
-    echo "Downloaden van WP-CLI voor configuratie van WordPress account"
-    curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
-    mv wp-cli.phar /usr/local/bin/wp/wp-cli.phar
+    echo "---------------------------Downloaden van WP-CLI voor configuratie van WordPress account----------------------"
+    curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar > /dev/null
+    echo "------------------------------Verplaatsen van WP-CLI naar de juiste locatie-----------------------------"
+    mv wp-cli.phar /usr/local/bin/wp/wp-cli.phar > /dev/null
     chmod +x  /usr/local/bin/wp/wp-cli.phar
 else 
     echo "wp-cli al geinstalleerd"
