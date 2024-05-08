@@ -67,7 +67,7 @@ echo "-----------------------installatie van WORDPRESS--------------------------
 if [ ! -f "/var/www/html/wordpress/wp-config.php" ]; then
     # Download en installeer WordPress
     echo "---------------------------Downloaden van WordPress----------------------"
-     sudo wget -P /var/www/html/ https://wordpress.org/latest.zip > /dev/null
+     sudo wget -P /var/www/html/ https://wordpress.org/latest.zip > /dev/null 2>&1
      echo "---------------------------uitpakken van WordPress----------------------"
      sudo unzip -o /var/www/html/latest.zip -d /var/www/html/ > /dev/null
      sudo chown www-data:www-data  -R /var/www/html/wordpress/*  > /dev/null# Let Apache be owner
@@ -151,7 +151,7 @@ echo "${WP_CONFIG_CONTENT}" |  tee "${WP_CONFIG}" >/dev/null
 if [ ! -f "/usr/local/bin/wp/wp-cli.phar" ]; then
     mkdir -p /usr/local/bin/wp/
     echo "---------------------------Downloaden van WP-CLI voor configuratie van WordPress account----------------------"
-    curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar > /dev/null
+    curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar > /dev/null 2>&1
     echo "------------------------------Verplaatsen van WP-CLI naar de juiste locatie-----------------------------"
     mv wp-cli.phar /usr/local/bin/wp/wp-cli.phar > /dev/null
     chmod +x  /usr/local/bin/wp/wp-cli.phar
@@ -185,9 +185,9 @@ RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule . /index.php [L]
 </IfModule>
 EOF
-
-chown www-data:www-data  -R /var/www/html/wordpress/.htaccess # Let Apache be owner
-chmod +755 /var/www/html/
+sleep 3
+sudo chown www-data:www-data  -R /var/www/html/wordpress/.htaccess # Let Apache be owner
+sudo chmod +755 /var/www/html/
 sudo a2enmod rewrite
 systemctl restart apache2
 /usr/local/bin/wp/wp-cli.phar rewrite structure '/%postname%/' --hard --allow-root --path="/var/www/html/wordpress/"

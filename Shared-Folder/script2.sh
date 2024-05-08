@@ -54,7 +54,7 @@ if [ -d "/var/www/html/chamilo" ]; then
     echo "---------------------chamlilo zip bestand is al uitgepakt.-----------------------"
 else
     # Download en pak het zipbestand uit
-    sudo wget -nv -P /home/osboxes https://github.com/chamilo/chamilo-lms/releases/download/v1.11.18/chamilo-1.11.18-php74.zip
+    sudo wget -nv -P /home/osboxes https://github.com/chamilo/chamilo-lms/releases/download/v1.11.18/chamilo-1.11.18-php74.zip > /dev/null 2>&1
     sleep 3
     echo "unzippen chamilo....................."
     sudo unzip /home/osboxes/chamilo-1.11.18-php74.zip -d /home/osboxes/ > /dev/null

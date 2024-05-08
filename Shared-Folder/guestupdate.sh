@@ -2,9 +2,9 @@
 export DEBIAN_FRONTEND=noninteractive
 export NEEDRESTART_MODE=a
 # Fetch VirtualBox Guest Additions version from latest.txt
-echo "apt update uitvoeren"
+echo "---------------------------------------------------------------------------apt update uitvoeren---------------------------------"
 echo 'osboxes.org' | sudo -S apt update -y >/dev/null
-echo "apt install curl uitvoeren"
+echo "--------------------------------------------apt install curl uitvoeren----------------------------------------"
 echo 'osboxes.org' | sudo -S apt install curl -y >/dev/null
 
 
@@ -12,8 +12,8 @@ VBOX_VERSION=$(curl -sSL https://download.virtualbox.org/virtualbox/LATEST.TXT)
 
 # Get the currently installed version, if any
 INSTALLED_VERSION=$(VBoxClient --version 2>/dev/null || echo "Not installed")
-echo "Installed version: ${INSTALLED_VERSION%%r*}"
-echo "Latest version: ${VBOX_VERSION}"
+echo "====Installed version: ${INSTALLED_VERSION%%r*}====="
+echo "====Latest version: ${VBOX_VERSION}====="
 # Compare the current installed version with the latest available version
 if [ "${VBOX_VERSION}" != "${INSTALLED_VERSION%%r*}" ]; then
     # Update package list and install dependencies
@@ -29,7 +29,7 @@ if [ "${VBOX_VERSION}" != "${INSTALLED_VERSION%%r*}" ]; then
 
     # Download VirtualBox Guest Additions ISO
     echo "---------------------downloaden van VBoxGuestAdditions_$VBOX_VERSION.iso-----------------------------"
-    wget -P $tmp_dir https://download.virtualbox.org/virtualbox/$VBOX_VERSION/VBoxGuestAdditions_$VBOX_VERSION.iso >/dev/null
+    wget -P $tmp_dir https://download.virtualbox.org/virtualbox/$VBOX_VERSION/VBoxGuestAdditions_$VBOX_VERSION.iso > /dev/null 2>&1
     # Mount the ISO
     echo "--------------------------------mounten van VBoxGuestAdditions_$VBOX_VERSION.iso---------------------------------------------------"
     echo 'osboxes.org' | sudo -S mount -o loop $tmp_dir/VBoxGuestAdditions_$VBOX_VERSION.iso /mnt
@@ -38,11 +38,11 @@ if [ "${VBOX_VERSION}" != "${INSTALLED_VERSION%%r*}" ]; then
     
     # Run the installer script with automatic "yes" responses to prompts
     echo "--------Installing the new version of VirtualBox Guest Additions $VBOX_VERSION-------------------"
-    yes | sudo -S /mnt/VBoxLinuxAdditions.run >/dev/null
+    yes | sudo -S /mnt/VBoxLinuxAdditions.run > /dev/null 2>&1
     echo "------------------Updated from $INSTALLED_VERSION version: $VBOX_VERSION------------------------------"
     # Clean up
     echo 'osboxes.org' | sudo -S  umount /mnt
-    rm -rf $tmp_dir >/dev/null
+    rm -rf $tmp_dir >/dev/null 2>&1
     echo "-----VirtualBox Guest Additions installed successfully.-----"
     echo "-------------------------------------------------------------Restarting the server...----------------------------------------------------------------------------------"
     echo "klaar"

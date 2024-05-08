@@ -187,8 +187,8 @@ Invoke-SSHStreamExpectSecureAction -ShellStream $stream -Command "sudo su - " -E
 Start-Sleep -Seconds 1
 Invoke-SSHStreamShellCommand -ShellStream $stream -Command "echo '${guestupdatesh}' > /home/osboxes/guestupdate.sh"
 Start-Sleep -Seconds 1
-Invoke-SSHStreamShellCommand -ShellStream $stream -Command "sudo apt install dos2unix -y &>/dev/null && sudo dos2unix /home/osboxes/guestupdate.sh"
-Start-Sleep -Seconds 1
+# Invoke-SSHStreamShellCommand -ShellStream $stream -Command "sudo apt install dos2unix -y &>/dev/null && sudo dos2unix /home/osboxes/guestupdate.sh"
+# Start-Sleep -Seconds 1
 Invoke-SSHStreamShellCommand -ShellStream $stream -Command "chmod +x /home/osboxes/guestupdate.sh"
 Start-Sleep -Seconds 1
 Invoke-SSHStreamShellCommand -ShellStream $stream -Command "bash /home/osboxes/guestupdate.sh && echo 'plopkoekkabouter'"
