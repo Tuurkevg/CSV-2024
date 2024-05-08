@@ -248,3 +248,5 @@ VBoxManage --nologo guestcontrol "Kali Linux" run --exe "/bin/bash" --username r
 # Variables
 Write-Host "IP-adres van Debian-server (mag niet leeg zijn): $ipAddressDebian"
 Write-Host "domein naam van chamilo  webserver (mag niet leeg zijn): $DOMAIN_NAME_CHAMILO"
+
+Read-Host "druk een toets om af te sluiten!!!!!!"
