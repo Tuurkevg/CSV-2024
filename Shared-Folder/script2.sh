@@ -54,11 +54,12 @@ if [ -d "/var/www/html/chamilo" ]; then
     echo "---------------------chamlilo zip bestand is al uitgepakt.-----------------------"
 else
     # Download en pak het zipbestand uit
+	echo "..............................Downloaden chamilo....................."
     sudo wget -nv -P /home/osboxes https://github.com/chamilo/chamilo-lms/releases/download/v1.11.18/chamilo-1.11.18-php74.zip > /dev/null 2>&1
     sleep 3
-    echo "unzippen chamilo....................."
+    echo "..........................unzippen chamilo....................."
     sudo unzip /home/osboxes/chamilo-1.11.18-php74.zip -d /home/osboxes/ > /dev/null
-    echo "verplaatsen chamilo..................... naar /var/www/html/chamilo"
+    echo ".........................verplaatsen chamilo..................... naar /var/www/html/chamilo"
     # Verplaats de uitgepakte map naar de juiste locatie
     sudo mv /home/osboxes/chamilo-1.11.18 /var/www/html/chamilo > /dev/null
     echo "verwijderen van zip bestand en uitgepakte map"
@@ -118,7 +119,7 @@ else
     cd /home/osboxes/LibreOffice_4.2.8.2_Linux_x86-64_deb/DEBS
     
     # Installeer de deb-pakketten
-    echo "LibreOffice wordt geïnstalleerd..."
+    echo "---------------------------LibreOffice wordt geinstalleerd..-----------------------------."
     sudo dpkg -i *.deb
     echo "-------files verwijderen die onnodig zijn-------------------------------"
     rm -rf /home/osboxes/LibreOffice_4.2.8.2_Linux_x86-64_deb > /dev/null

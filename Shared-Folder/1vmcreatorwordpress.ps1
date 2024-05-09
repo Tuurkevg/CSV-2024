@@ -227,4 +227,4 @@ VBoxManage --nologo guestcontrol "Kali Linux" run --exe "/bin/bash" --username r
 Write-Host "------------------EINDE SCRIPT; CONTROLEER OF BEIDE WAARDES HIERONDER CORRECT WORDEN WEERGEGEVEN----------------------"
 Write-Host "IP-adres van Ubuntu-server (mag niet leeg zijn): $ipAddressUbuntu"
 Write-Host "domein naam van wordpress webserver (mag niet leeg zijn): $DOMAIN_NAME"
-Read-Host "druk een toets om af te sluiten!!!!!!"
+Read-Host "druk enter om af te sluiten!!!!!!"
