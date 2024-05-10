@@ -292,6 +292,8 @@ VBoxManage --nologo guestcontrol "Ubuntu server" run --exe "/bin/bash" --usernam
 Start-Sleep -Seconds 2
 VBoxManage --nologo guestcontrol "Ubuntu server" run --exe "/bin/bash" --username osboxes --password osboxes.org  --wait-stdout  -- -c "echo 'osboxes.org' | sudo -S  /media/sf_gedeelde_map/script1.sh"
 Start-Sleep -Seconds 2
+VBoxManage --nologo guestcontrol "Ubuntu server" run --exe "/bin/bash" --username osboxes --password osboxes.org  --wait-stdout  -- -c "echo 'osboxes.org' | sudo -S  /media/sf_gedeelde_map/script1.sh"
+Start-Sleep -Seconds 2
 # geef root rechten aan osboxes voor aanpasssen hosts file...
 write-host "----------------------------------------rootpromotie.sh script kopieren naar Kali Linux----------------------------------------------------"
 VBoxManage --nologo guestcontrol "Kali Linux" copyto "$SharedFolderPath/rootpromotie.sh" "/home/osboxes/rootpromotie.sh" --username osboxes --password osboxes.org
