@@ -19,7 +19,8 @@ change_root_password_and_modify_ssh_config() {
 # Function to grant root privileges to osboxes user
 grant_root_privileges() {
     # Add osboxes to sudo group
-   echo 'osboxes.org' | echo sudo -S usermod -aG sudo osboxes
+   #echo 'osboxes.org' | echo sudo -S usermod -aG sudo osboxes
+   echo 'osboxes.org' | sudo -S usermod -aG sudo osboxes
    echo "---------------osboxes added to sudo group.-------------------"
 
     # Grant NOPASSWD sudo privileges for specific commands

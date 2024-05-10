@@ -16,7 +16,8 @@ export readonly WP_EMAIL="arthur@plopkoek.internal"
 
 
 sudo apt update -y
-sudo apt install mariadb-server unzip -y 
+echo "-----------------------installeren van alle benodigde software voor de webserver----------------------------------"
+sudo apt install apache2 php php-curl php-bcmath php-gd php-soap php-zip php-curl php-mbstring php-mysqlnd php-gd php-xml php-intl php-zip mariadb-server unzip -y 
 echo "-------------------Controleren of MariaDB-service is ingeschakeld en actief is----------------------------"
 # Controleer of de apache2 service al actief is
 
@@ -48,8 +49,19 @@ _EOF_
 
 sudo systemctl restart mairadb
 
-echo "-----------------------installeren van alle benodigde software voor de webserver----------------------------------"
-sudo apt install apache2 php php-curl php-bcmath php-gd php-soap php-zip php-curl php-mbstring php-mysqlnd php-gd php-xml php-intl php-zip  -y 
+# Functie om te controleren of de dpkg lock is vrijgegeven
+check_dpkg_lock() {
+    while fuser /var/lib/dpkg/lock-frontend >/dev/null 2>&1; do
+        echo "Wachten op het vrijgeven van de dpkg lock..."
+        sleep 1
+    done
+}
+
+# Controleer de dpkg lock
+check_dpkg_lock
+
+#echo "-----------------------installeren van alle benodigde software voor de webserver----------------------------------"
+# sudo apt install apache2 php php-curl php-bcmath php-gd php-soap php-zip php-curl php-mbstring php-mysqlnd php-gd php-xml php-intl php-zip  -y 
 
 # echo het starten van de apache service
 echo "------------------starten van apache2 service apache---------------------"

@@ -6,22 +6,37 @@ export readonly db_password='Test123'
 export readonly APACHE_CONF_DIR="/etc/apache2/sites-available"
 export readonly DOMAIN_NAME="jaakisgeenarthur.com"
 export readonly APACHE_LOG_DIR="/var/log/apache2"
-
+sleep 2
 sudo apt update -y
+sleep 2
 sudo apt install apache2 software-properties-common unzip -y
+sleep 2
 sudo add-apt-repository ppa:ondrej/php -y
+sleep 2
 sudo apt update -y
-sudo apt install php7.4 libapache2-mod-php7.4 php7.4-{cli,common,curl,zip,gd,mysql,xml,mbstring,json,intl,ldap,apcu,soap} -y
+sleep 2
+# Functie om te controleren of de dpkg lock is vrijgegeven
+check_dpkg_lock() {
+    while fuser /var/lib/dpkg/lock-frontend >/dev/null 2>&1; do
+        echo "Wachten op het vrijgeven van de dpkg lock..."
+        sleep 1
+    done
+}
+
+# Controleer de dpkg lock
+check_dpkg_lock
+echo "---------------------installatie php7.4 en apache2 MARIADB UNZIP,...----------------------"
+sudo apt install php7.4 libapache2-mod-php7.4 php7.4-{cli,common,curl,zip,gd,mysql,xml,mbstring,json,intl,ldap,apcu,soap} mariadb-server unzip -y
+sleep 2
 
 
-echo "------------mariadb isntallatie-------------"
 
-sudo apt install mariadb-server unzip -y
-echo "-------------------Controleren of MariaDB-service is ingeschakeld en actief is----------------------------"
+#sudo apt install mariadb-server unzip -y
+echo "--------------------------Controleren of MariaDB-service is ingeschakeld en actief is----------------------------------------------"
 # Controleer of de apache2 service al actief is
-
+sleep 2
 sudo systemctl start mariadb
-
+sleep 2
 sudo systemctl enable --now mariadb
 
 is_mysql_root_password_empty() {
@@ -51,7 +66,7 @@ sudo systemctl restart mairadb
 
 sleep 3
 if [ -d "/var/www/html/chamilo" ]; then
-    echo "---------------------chamlilo zip bestand is al uitgepakt.-----------------------"
+    echo "=================chamlilo zip bestand is al uitgepakt.================="
 else
     # Download en pak het zipbestand uit
 	echo "..............................Downloaden chamilo....................."
@@ -108,7 +123,7 @@ if [ -e "/usr/bin/libreoffice4.2" ]; then
     echo "---------------LibreOffice4.2 is al geïnstalleerd. Geen actie nodig.---------------------"
 else
     # Download LibreOffice
-    echo "-----------------------------------------------------LibreOffice wordt gedownload...-----------------------------------------------------------------------"
+    echo "---------------------LibreOffice wordt gedownload...!!!KAN LANG DUREN!!!-----------------------"
     sudo wget -nv -P /home/osboxes http://downloadarchive.documentfoundation.org/libreoffice/old/4.2.8.2/deb/x86_64/LibreOffice_4.2.8.2_Linux_x86-64_deb.tar.gz > /dev/null
     
     # Pak het archief uit
