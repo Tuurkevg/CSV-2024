@@ -6,15 +6,7 @@ export readonly db_password='Test123'
 export readonly APACHE_CONF_DIR="/etc/apache2/sites-available"
 export readonly DOMAIN_NAME="jaakisgeenarthur.com"
 export readonly APACHE_LOG_DIR="/var/log/apache2"
-sleep 2
-sudo apt update -y
-sleep 2
-sudo apt install apache2 software-properties-common unzip -y
-sleep 2
-sudo add-apt-repository ppa:ondrej/php -y
-sleep 2
-sudo apt update -y
-sleep 2
+
 # Functie om te controleren of de dpkg lock is vrijgegeven
 check_dpkg_lock() {
     while fuser /var/lib/dpkg/lock-frontend >/dev/null 2>&1; do
@@ -22,6 +14,20 @@ check_dpkg_lock() {
         sleep 1
     done
 }
+sleep 2
+sudo apt update -y
+sleep 2
+check_dpkg_lock
+sudo apt install apache2 software-properties-common unzip -y
+sleep 2
+check_dpkg_lock
+sudo add-apt-repository ppa:ondrej/php -y
+sleep 2
+check_dpkg_lock
+sudo apt update -y
+sleep 2
+
+
 
 # Controleer de dpkg lock
 check_dpkg_lock
