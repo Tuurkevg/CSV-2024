@@ -20,7 +20,7 @@ Binnen het .zip bestand zal u 8 bestanden vinden.
    - Dit bash script zal gekopieerd worden naar de kali linux machine en dan uitgevoerd worden door het run_me.ps1 script.
    - Dit bash script bevat commando's om ervoor te zorgen dat het root account geactiveerd wordt voor de Kali Linux vm.
 4. guestupdate.sh
-   - Dit script update de guest-additions van VirtualBox op de Ubuntu server (dit is nodig voor VBoxManage correct te kunnen gebruiken).
+   - Dit script update de guest-additions van VirtualBox op de Ubuntu/Debian server (dit is nodig voor VBoxManage correct te kunnen gebruiken).
    - Dit bash script zal gekopieerd worden naar de Ubuntu server machine en dan uitgevoerd worden door het run_me.ps1 script.
 5. woocommerce-payments.5.6.1.zip
    - Deze zip file bevat de verouderde en kwetsbare versie van een WooCommerce plugin.
@@ -37,13 +37,13 @@ Binnen het .zip bestand zal u 8 bestanden vinden.
 
 Check je VirtualBox versie, indien mogelijk update deze naar de nieuwste versie.
 
-Download ook deze drie .vdi files van [OSBoxes](https://www.osboxes.org/), deze .vdi bestanden zouden telkens de 64-bit versies moeten zijn maar check voor de zekerheid je systeem.
+Download ook deze drie .vdi files van [OSBoxes](https://www.osboxes.org/), Zorg dat je altijd de 64 bit versie kiest!
 
 1. Download de "23.04 Lunar Lobster" [Ubuntu-Server](https://www.osboxes.org/ubuntu-server/)
 2. Download de "2024.1" [Kali-Linux](https://www.osboxes.org/kali-linux/)
 3. Download de "Debian 11 Bullseye (Debian **server** versie)" [Debain-server](https://www.osboxes.org/debian/)
 
-Deze .vdi files mogen op uw toestel staan waar u wilt, maar hou de locatie goed bij. Pak nu beide .vdi's uit.
+Deze .vdi files mogen op uw toestel staan waar u wilt, maar hou de locatie goed bij. Pak nu alle  .vdi's uit.
 
 ## Opzetten van de omgeving
 
@@ -58,9 +58,16 @@ Deze .vdi files mogen op uw toestel staan waar u wilt, maar hou de locatie goed 
 
 2. Pak de .zip file die u gedownload heeft uit.
 3. In de map "Shared-Folder" vindt u alle scripts. Voer enkel het "run_me.ps1" uit, dit via rechtermuisklik "Run with Powershell" (niet met PowerShell ISE).
-4. Het script zal u vier absolute paden vragen. Onder andere van de drie .vdi bestanden als ook van de "Shared-Folder", dit is de map die u zojuist hebt gedownload en uitgepakt. Ook zal je de juiste ethernet adapater moeten selecteren om te gebruiken. Als je in een netwerk zit met authenticatie, waar het niet mogelijk is om meerdere IP adressen te hebben op dezelfde NIC, zal je de omgeving niet kunnen opzetten. Omdat onze VMs op bridged adapter ingesteld staan zal dit niet mogelijk zijn.
-5. Accepteer het installeren van Nuget services en sta ook updates toe.
-6. Zorg ervoor dat na het uitvoeren van het script de laatste regel in de console het volgende weergeeft:
+4.  Het script zal u vier absolute paden vragen:
+    - Het pad van elk van de drie .vdi-bestanden.
+    - Het pad van de "Shared-Folder", de map die u zojuist hebt gedownload en uitgepakt.
+5. U moet ook de juiste ethernetadapter selecteren om te gebruiken.
+    - Als u zich in een netwerk bevindt met authenticatie, waar het niet mogelijk is om meerdere IP-adressen te hebben op dezelfde NIC, zult u de omgeving niet kunnen opzetten.
+    - Omdat onze VM's zijn ingesteld op een bridged adapter, zal dit niet mogelijk zijn.
+
+6. Accepteer het installeren van Nuget services en sta ook updates toe indien nodig!
+    - **(!!!sluit hierna u ps venster af en start terug opnieuw!!!)** Anders zal het script errors geven.
+7. Zorg ervoor dat na het uitvoeren van het script de laatste regel in de console het volgende weergeeft:
 
 ```bash
 CHAMILO: IP-adres van Debian-server: 172.31.32.247 #IP-adres dat logisch is in jouw netwerk
@@ -69,19 +76,22 @@ WORDPRESS: IP-Adres van Ubuntu-server: 192.168.69.69 #IP-adres dat logisch is in
 WORDPRESS: domein naam van wordpress webserver: arthurisgeenjaak.com
 ```
 
-Als dit niet het geval is, betekent dit dat het hosts-bestand niet correct is aangemaakt.
+Als dit niet het geval is, KAN dit betekent dat het hosts-bestand niet correct is aangemaakt. (controleeer dit)
 
 Hier volgt een voorbeeld van hoe het einde van het script kan uitzien (indien er een fout is in geslopen):
 
 ```bash
-IP-Adres van de Ubuntu-server: 192.168.69.69 #IP-adres dat logisch is in jouw netwerk
-IP-Adres van de Ubuntu-server:
+CHAMILO: IP-adres van Debian-server: 172.31.32.247 #IP-adres dat logisch is in jouw netwerk
+CHAMILO: domeinn naam van chamilo webserver: jaakisgeenarthur.com
+WORDPRESS: IP-Adres van Ubuntu-server: # fout dit is leeg
+WORDPRESS: domein naam van wordpress webserver: # fout dit is leeg
 ```
 
-U kan dit oplossen door:
+U kan de meeste problemen oplossen door:
 
-1. Deze zal enkel de bash scripts uitvoeren die niet correct zijn uitgevoerd aangezien de VM's al bestaan en bepaalde gedeeltes van de installatie al gebeurd zijn.
-2. U voegt deze handmatig toe als het script niet correct heeft gewerkt door het commando `sudo nano /etc/hosts` uit te voeren en daar te controleren of het gegeven ubuntu server ip er in staat en vervolgens arthurisgeenjaak.com er naast te typen.
+-  Begin volledig opnieuw met voorkeur ook alle vms volledig verwijderen
+-  als alles perfect werkt maar de hosts file incorrect is op de Kali linux: voeg handmatig de waardes in van arthurisgeenjaak.com --> ip in ```/etc/hosts``` of het andere ip adres en domein naam
+
 
 ## Misbruiken van de exploit in WooComerce a.d.h.v. Metasploit
 
