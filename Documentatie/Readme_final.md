@@ -45,9 +45,18 @@ Deze .vdi files mogen op uw toestel staan waar u wilt, maar hou de locatie goed 
 
 ## Opzetten van de omgeving
 
-1. Pak de .zip file die u gedownload heeft uit.
-2. In de map "Shared-Folder" vindt u alle scripts. Voer enkel het "run_me.ps1" uit, dit via rechtermuisklik "Run with Powershell" (niet met PowerShell ISE).
-3. Het script zal u vier absolute paden vragen. Onder andere van de drie .vdi bestanden als ook van de "Shared-Folder", dit is de map die u zojuist hebt gedownload en uitgepakt.
+1. In een administrator PowerShell venster voer eerst volgende commando's uit:
+
+   ```powershell
+   Set-ExecutionPolicy Unrestricted -Scope CurrentUser
+   Set-ExecutionPolicy Unrestricted
+   ```
+
+   Deze dienen ervoor dat je straks root rechten krijgt bij het uitvoeren van "run_me.ps1".
+
+2. Pak de .zip file die u gedownload heeft uit.
+3. In de map "Shared-Folder" vindt u alle scripts. Voer enkel het "run_me.ps1" uit, dit via rechtermuisklik "Run with Powershell" (niet met PowerShell ISE).
+4. Het script zal u vier absolute paden vragen. Onder andere van de drie .vdi bestanden als ook van de "Shared-Folder", dit is de map die u zojuist hebt gedownload en uitgepakt.
 
 ## Misbruiken van de exploit in WooComerce a.d.h.v. Metasploit
 
