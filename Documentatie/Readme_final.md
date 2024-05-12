@@ -5,7 +5,7 @@ Auteurs: Arthur Van Ginderachter, Jaak Daemen, Renz De Baets, Bert Coudenys
 In deze readme gaan wij uitleggen hoe je de exploit van WordPress kan gebruiken om een Admin account te maken en toegang te krijgen met admin level access op een WordPress server.
 En hoe je de exploit van Chamilo kan misbruiken.
 
-## Scripts en bestanden nodig voor het opzetten van de omgeving.
+## Scripts en requirements voor het opzetten van de omgeving.
 
 We hebben de omgeving opzetten geautomatiseerd aan de hand van scripts zowel PowerShell als bash.
 Binnen het .zip bestand zal u 8 bestanden vinden.
@@ -35,11 +35,13 @@ Binnen het .zip bestand zal u 8 bestanden vinden.
    - Dit zal uitgevoerd worden door script2.sh.
    - Dit PHP-bestand bevat PHP-code die wordt gebruikt om dynamische functionaliteit toe te voegen aan onze Chamilo webpagina.
 
-Download ook deze drie .vdi files van [OSBoxes](https://www.osboxes.org/)
+Check je VirtualBox versie, indien mogelijk update deze naar de nieuwste versie.
+
+Download ook deze drie .vdi files van [OSBoxes](https://www.osboxes.org/), deze .vdi bestanden zouden telkens de 64-bit versies moeten zijn maar check voor de zekerheid je systeem.
 
 1. Download de "23.04 Lunar Lobster" [Ubuntu-Server](https://www.osboxes.org/ubuntu-server/)
 2. Download de "2024.1" [Kali-Linux](https://www.osboxes.org/kali-linux/)
-3. Download de "Debian 11 Bullseye" [Debain-server](https://www.osboxes.org/debian/)
+3. Download de "Debian 11 Bullseye (Debian **server** versie)" [Debain-server](https://www.osboxes.org/debian/)
 
 Deze .vdi files mogen op uw toestel staan waar u wilt, maar hou de locatie goed bij. Pak nu beide .vdi's uit.
 
@@ -52,11 +54,34 @@ Deze .vdi files mogen op uw toestel staan waar u wilt, maar hou de locatie goed 
    Set-ExecutionPolicy Unrestricted
    ```
 
-   Deze dienen ervoor dat je straks root rechten krijgt bij het uitvoeren van "run_me.ps1".
+   Deze dienen ervoor dat je straks "run_me.ps1" kunt uitvoeren in PowerShell.
 
 2. Pak de .zip file die u gedownload heeft uit.
 3. In de map "Shared-Folder" vindt u alle scripts. Voer enkel het "run_me.ps1" uit, dit via rechtermuisklik "Run with Powershell" (niet met PowerShell ISE).
-4. Het script zal u vier absolute paden vragen. Onder andere van de drie .vdi bestanden als ook van de "Shared-Folder", dit is de map die u zojuist hebt gedownload en uitgepakt.
+4. Het script zal u vier absolute paden vragen. Onder andere van de drie .vdi bestanden als ook van de "Shared-Folder", dit is de map die u zojuist hebt gedownload en uitgepakt. Ook zal je de juiste ethernet adapater moeten selecteren om te gebruiken. Als je in een netwerk zit met authenticatie, waar het niet mogelijk is om meerdere IP adressen te hebben op dezelfde NIC, zal je de omgeving niet kunnen opzetten. Omdat onze VMs op bridged adapter ingesteld staan zal dit niet mogelijk zijn.
+5. Accepteer het installeren van Nuget services en sta ook updates toe.
+6. Zorg ervoor dat na het uitvoeren van het script de laatste regel in de console het volgende weergeeft:
+
+```bash
+CHAMILO: IP-adres van Debian-server: 172.31.32.247 #IP-adres dat logisch is in jouw netwerk
+CHAMILO: domeinn naam van chamilo webserver: jaakisgeenarthur.com
+WORDPRESS: IP-Adres van Ubuntu-server: 192.168.69.69 #IP-adres dat logisch is in jouw netwerk
+WORDPRESS: domein naam van wordpress webserver: arthurisgeenjaak.com
+```
+
+Als dit niet het geval is, betekent dit dat het hosts-bestand niet correct is aangemaakt.
+
+Hier volgt een voorbeeld van hoe het einde van het script kan uitzien (indien er een fout is in geslopen):
+
+```bash
+IP-Adres van de Ubuntu-server: 192.168.69.69 #IP-adres dat logisch is in jouw netwerk
+IP-Adres van de Ubuntu-server:
+```
+
+U kan dit oplossen door:
+
+1. Deze zal enkel de bash scripts uitvoeren die niet correct zijn uitgevoerd aangezien de VM's al bestaan en bepaalde gedeeltes van de installatie al gebeurd zijn.
+2. U voegt deze handmatig toe als het script niet correct heeft gewerkt door het commando `sudo nano /etc/hosts` uit te voeren en daar te controleren of het gegeven ubuntu server ip er in staat en vervolgens arthurisgeenjaak.com er naast te typen.
 
 ## Misbruiken van de exploit in WooComerce a.d.h.v. Metasploit
 
